@@ -20,7 +20,9 @@ export class UserService {
 
   async findAll(): Promise<UserModel[]> {
     try {
-      return await this.prisma.user.findMany();
+      return await this.prisma.user.findMany({
+        select: this._select,
+      });
     } catch (error) {
       throw error.message;
     }
@@ -34,11 +36,11 @@ export class UserService {
         where: userWhereUniqueInput,
       });
     } catch (error) {
-      throw error.message;
+      throw new InternalServerErrorException('Id informado não existe');
     }
   }
 
-  async create(data: CreateUserDto) {
+  async create(data: CreateUserDto): Promise<UserModel> {
     const { password } = data;
 
     const saltRounds = 10;
@@ -60,24 +62,25 @@ export class UserService {
     }
   }
 
-  async update(id: number, data: UpdateUserDto) {
+  async update(id: number, data: UpdateUserDto): Promise<UserModel> {
     try {
       return await this.prisma.user.update({
         where: { id },
         data,
+        select: this._select,
       });
     } catch (error) {
-      throw error.message;
+      throw new InternalServerErrorException('Id informado não existe');
     }
   }
 
-  async remove(where: Prisma.UserWhereUniqueInput) {
+  async remove(where: Prisma.UserWhereUniqueInput): Promise<UserModel> {
     try {
       return await this.prisma.user.delete({
         where,
       });
     } catch (error) {
-      throw error.message;
+      throw new InternalServerErrorException('Id informado não existe');
     }
   }
 }
