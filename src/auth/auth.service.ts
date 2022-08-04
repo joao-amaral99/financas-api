@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { UserService } from 'src/user/user.service';
@@ -11,7 +11,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async login(user: User) {
+  async login(user: Partial<User>) {
     const payload = { sub: user.id, email: user.email };
 
     return {
@@ -20,17 +20,16 @@ export class AuthService {
   }
 
   async validate(email: string, password: string) {
-    let user: User;
+    let user: Partial<User>;
 
     try {
       user = await this.userService.findOne({ email });
+
+      const isPasswordValid = compareSync(password, user.password);
+      if (!isPasswordValid) return null;
     } catch (error) {
       return null;
     }
-
-    const isPasswordValid = compareSync(password, user.password);
-
-    if (!isPasswordValid) return null;
 
     return user;
   }
