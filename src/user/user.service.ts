@@ -28,12 +28,10 @@ export class UserService {
     }
   }
 
-  async findOne(
-    userWhereUniqueInput: Prisma.UserWhereUniqueInput,
-  ): Promise<UserModel> {
+  async findOne(where: Prisma.UserWhereUniqueInput): Promise<UserModel> {
     try {
       return await this.prisma.user.findUnique({
-        where: userWhereUniqueInput,
+        where,
       });
     } catch (error) {
       throw new InternalServerErrorException('Id informado não existe');
