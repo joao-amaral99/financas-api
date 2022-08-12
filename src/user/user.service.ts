@@ -16,6 +16,7 @@ export class UserService {
     name: true,
     email: true,
     password: false,
+    expenses: true,
   };
 
   async findAll(): Promise<UserModel[]> {
