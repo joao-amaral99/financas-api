@@ -16,4 +16,8 @@ export class CreateExpenseDto {
   @IsNumber()
   @IsNotEmpty()
   userId: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  categoryId: number;
 }
