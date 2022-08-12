@@ -10,7 +10,7 @@ export class CategoryService {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll(): Promise<Category[]> {
-    return await this.prisma.category.findMany();
+    return await this.prisma.category.findMany({ include: { expenses: true } });
   }
 
   async findOne(where: Prisma.UserWhereUniqueInput): Promise<Category> {
@@ -26,10 +26,7 @@ export class CategoryService {
   async create(data: CreateCategoryDto): Promise<Category> {
     try {
       return await this.prisma.category.create({
-        data: {
-          name: data.name,
-          expensesId: data.expensesId,
-        },
+        data,
       });
     } catch (error) {
       throw new InternalServerErrorException(
