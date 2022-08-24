@@ -1,26 +1,25 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { UserService } from 'src/user/user.service';
 import { compareSync } from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
+import { UserService } from 'src/user/user.service';
+import { TokenService } from 'src/token/token.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly tokenService: TokenService,
   ) {}
 
   async login(user: Partial<User>) {
     const payload = { sub: user.id, email: user.email };
+    const token = this.jwtService.sign(payload);
+    await this.tokenService.save(token, user.email);
 
     return {
-      token: this.jwtService.sign(payload),
-      data: {
-        email: user.email,
-        id: user.id,
-        name: user.name,
-      },
+      token,
     };
   }
 
