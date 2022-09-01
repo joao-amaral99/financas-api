@@ -17,7 +17,7 @@ import { TokenModule } from 'src/token/token.module';
     TokenModule,
     JwtModule.register({
       privateKey: process.env.SECRET_KEY,
-      signOptions: { expiresIn: '360s' },
+      signOptions: { expiresIn: '864000s' },
     }),
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy],
